@@ -65,8 +65,9 @@ export const Modal = <T extends { id: number }>({
 
         <div className="flex justify-end">
           <button
+            disabled={value === placeholder || value === ''}
             onClick={handleSave}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mr-2"
+            className={`bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mr-2 ${value === placeholder || value === '' ? 'opacity-50 cursor-not-allowed' : ''}`}
           >
             Save
           </button>

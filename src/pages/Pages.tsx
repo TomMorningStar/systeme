@@ -1,4 +1,3 @@
-// PagesPage.tsx
 import React from 'react';
 import { pages } from '../shared/data';
 import { Filters } from '../shared/Filters';

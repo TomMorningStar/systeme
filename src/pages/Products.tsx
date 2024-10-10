@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { products } from '../shared/data';
 import { Filters } from '../shared/Filters';
 import { orderByEnums, sortByEnums } from '../shared/Filters/SearchOptions';
@@ -122,7 +123,6 @@ const Products: React.FC = () => {
         titleKey={TITLE_KEY}
         hasOptions={true}
         onSortOptions={onSortOptions}
-        // onSortDateCreateAt={createdAt.setFilterDate}
         onSortDateCreateAt={setSortDateCreateAt}
       />
 

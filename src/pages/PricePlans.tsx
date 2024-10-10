@@ -1,4 +1,3 @@
-// PricePlansPage.tsx
 import React from 'react';
 
 import { pricePlans } from '../shared/data';
