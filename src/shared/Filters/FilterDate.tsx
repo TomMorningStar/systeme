@@ -1,34 +1,29 @@
 import React from 'react';
-import { Option } from '../types';
+
+export type ISortOrder = 'default' | 'asc' | 'desc';
 
 interface Props {
-  selectedOption: string;
-  setSelectedOption: React.Dispatch<React.SetStateAction<Option>>;
+  title: string;
+  setState: React.Dispatch<React.SetStateAction<ISortOrder>>;
+  state: ISortOrder;
 }
 
-const options: Option[] = ['All', 'Active', 'Not Active'];
+const sortOptions: ISortOrder[] = ['default', 'asc', 'desc'];
 
-export const SearchActive: React.FC<Props> = ({ selectedOption, setSelectedOption }) => {
+export const FilterDate: React.FC<Props> = ({ title, setState, state }) => {
   const [isOpen, setIsOpen] = React.useState<boolean>(false);
-  const dropdownRef = React.createRef<HTMLDivElement>();
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
 
-  const toggleDropdown = () => {
-    setIsOpen((prev) => !prev);
-  };
-
-  const handleOptionClick = (option: Option) => {
-    setSelectedOption(option);
+  const handleOptionClick = (option: ISortOrder) => {
+    setState(option);
     setIsOpen(false);
   };
 
-  const handleClickOutside = React.useCallback(
-    (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    },
-    [dropdownRef]
-  );
+  const handleClickOutside = React.useCallback((event: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setIsOpen(false);
+    }
+  }, []);
 
   React.useEffect(() => {
     document.addEventListener('mousedown', handleClickOutside);
@@ -36,14 +31,16 @@ export const SearchActive: React.FC<Props> = ({ selectedOption, setSelectedOptio
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [handleClickOutside]);
+
   return (
     <div ref={dropdownRef} className="relative inline-block text-left">
       <div>
         <button
-          onClick={toggleDropdown}
+          onClick={() => setIsOpen((prev) => !prev)}
           className="inline-flex justify-between w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
         >
-          {selectedOption.charAt(0).toUpperCase() + selectedOption.slice(1)}
+          {title}:{' '}
+          {state === 'asc' ? '⬆️ Ascending' : state === 'desc' ? '⬇️ Descending' : '➖ Default'}
           <svg
             className="-mr-1 ml-2 h-5 w-5"
             xmlns="http://www.w3.org/2000/svg"
@@ -61,20 +58,24 @@ export const SearchActive: React.FC<Props> = ({ selectedOption, setSelectedOptio
       </div>
 
       {isOpen && (
-        <div className="absolute right-0 z-10 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+        <div className="absolute right-0 z-10 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
           <div
             className="py-1"
             role="menu"
             aria-orientation="vertical"
             aria-labelledby="options-menu"
           >
-            {options.map((option) => (
+            {sortOptions.map((option) => (
               <button
                 key={option}
                 onClick={() => handleOptionClick(option)}
-                className={`block px-4 py-2 text-sm w-full text-left ${selectedOption === option ? 'bg-gray-100' : ''}`}
+                className={`block px-4 py-2 text-sm w-full text-left ${state === option ? 'bg-gray-100' : ''}`}
               >
-                {option.charAt(0).toUpperCase() + option.slice(1)}
+                {option === 'asc'
+                  ? '⬆️ Ascending'
+                  : option === 'desc'
+                    ? '⬇️ Descending'
+                    : '➖ Default'}
               </button>
             ))}
           </div>
