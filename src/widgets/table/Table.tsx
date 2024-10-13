@@ -1,14 +1,17 @@
-export interface IColumn<T> {
-  header: string | JSX.Element;
-  accessor: keyof T | ((row: T) => JSX.Element);
+// export interface IColumn<T> {
+//   header: string;
+//   accessor: keyof T | ((row: T) => JSX.Element);
+// }
+
+import { ITransformColumns } from '../../shared/helpers/transformColumns';
+import { IAll } from '../../shared/types';
+
+interface TableProps {
+  data: IAll[];
+  columns: ITransformColumns[];
 }
 
-interface TableProps<T> {
-  data: T[];
-  columns: IColumn<T>[];
-}
-
-export const Table = <T extends Record<string, unknown>>({ data, columns }: TableProps<T>) => {
+export const Table = ({ data, columns }: TableProps) => {
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full table-auto border-collapse border border-gray-300">

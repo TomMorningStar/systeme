@@ -1,27 +1,43 @@
-import React from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
+import { api } from '../../api/getData';
+import { IAll, IEntityTable } from '../../shared/types';
 
 interface Props<T> {
-  id: number;
-  setData: React.Dispatch<React.SetStateAction<T[]>>;
+  id: string;
+  setState: Dispatch<SetStateAction<IAll[]>>;
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
   curKey: string;
   placeholder: string;
   onClose?: () => void;
+  editing: T;
+  tableEntity: IEntityTable;
 }
 
 export const Modal = <T extends { id: number }>({
   curKey,
-  setData,
+  setState,
   placeholder,
   id,
   setOpenModal,
+  editing,
+  tableEntity,
 }: Props<T>) => {
   const [value, setValue] = React.useState<string>(placeholder ?? '');
 
   const handleSave = () => {
-    setData((prev: T[]) =>
-      prev.map((item) => (item.id === id ? { ...item, [curKey]: value } : item))
-    );
+    const { data } = tableEntity;
+
+    // Пришлось так извращаться из-за ограничений в API
+    const cb = (item: IAll) => (item.id === editing.id ? { ...item, [curKey]: value } : item);
+    const body = {
+      ...tableEntity,
+      data: data.map(cb),
+    };
+
+    api.put(`/entity-table/${id}`, body).then(() => {
+      setState(data.map(cb));
+    });
+
     setOpenModal(false);
   };
 
